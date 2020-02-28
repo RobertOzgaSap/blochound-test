@@ -1,0 +1,45 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.5.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+def versions = [
+        test   : [
+                reactor       : '3.3.3.RELEASE', // should be the same as one provided by spring for reactor core
+                junit         : '5.5.2',
+                junitPlatform : '1.5.2'
+        ]
+]
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb-reactive"
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+    testImplementation "io.projectreactor.tools:blockhound-junit-platform:1.0.2.RELEASE"
+
+    testImplementation "io.projectreactor:reactor-test:$versions.test.reactor"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.test.junit"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.test.junit"
+    testImplementation "org.junit.platform:junit-platform-launcher:$versions.test.junitPlatform"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.test.junit"
+
+}
+
+test {
+    ignoreFailures true
+    useJUnitPlatform()
+    systemProperty 'java.security.egd', 'file:/dev/./urandom'
+}
